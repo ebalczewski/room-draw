@@ -5,7 +5,7 @@ def average(list):
   sum=0.0
   for item in list:
     sum+=float(item)
-  return sum/len(list)  
+  return int(sum/len(list)) 
 
 '''Returns the standard deviation of the draw order for a room.'''  
 def stdev(list):
@@ -13,7 +13,7 @@ def stdev(list):
   sum=0.0
   for item in list:
     sum+=(float(item)-avg)**(2)
-  return (sum/len(list))**(0.5)
+  return int((sum/len(list))**(0.5))
   
 '''Opens roomdata.csv. Sorts information into a dictionary. Calls avg, stdev functions. Writes to roomCalcs.csv.'''
 def main():  
@@ -23,7 +23,8 @@ def main():
   d={}
   newtext=''
   
-  for line in file:
+  lines = file.readlines()[1:]
+  for line in lines:
     values = line.split(",") #creating a list of RM Name, Term, Draw Number, Draw Order per line
     name = values[0]
   
@@ -37,12 +38,14 @@ def main():
   '''Data is way more fun when sorted!'''
   #d.sorted()
   stuff=d.items()
+  sorted_stuff=sorted(stuff, key=lambda room:room[0])
   
   '''Writing name, average, standard deviation to new file.'''
-  for item in stuff:
+  for item in sorted_stuff:
     newline=item[0]+ "," + str(average(item[1])) +"," + str(stdev(item[1])) + "\n"
     newtext+=newline
   
+  print newtext
   file = open("roomCalcs.csv","w")
   file.write(newtext)
   file.close()
